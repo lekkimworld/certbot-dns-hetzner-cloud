@@ -7,8 +7,8 @@ class DummyHelper:
     def __init__(self):
         self.delete_calls = []
 
-    def delete_txt_record(self, *, zone: str, name: str):
-        self.delete_calls.append((zone, name))
+    def delete_txt_record(self, *, zone: str, name: str, value: str = None):
+        self.delete_calls.append((zone, name, value))
 
 
 @pytest.fixture
@@ -42,9 +42,11 @@ def test_cleanup_removes_correct_txt_record(authenticator):
     assert len(dummy.delete_calls) == 1, "expected exactly one TXT record deletion call"
 
     # Extract the call arguments
-    zone, name = dummy.delete_calls[0]
+    zone, name, value = dummy.delete_calls[0]
 
     # Zone should be the registered domain
     assert zone == "example.com", f"unexpected zone: {zone}"
     # Record name should be relative within the zone
     assert name == "_acme-challenge.sub", f"unexpected record name: {name}"
+    # Value should match the validation token
+    assert value == validation_value, f"unexpected value: {value}"
