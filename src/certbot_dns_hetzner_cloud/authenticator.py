@@ -67,5 +67,6 @@ class HetznerCloudDNSAuthenticator(dns_common.DNSAuthenticator):
         self.logger.info("Removing TXT record %s from zone %s", record_name, zone_name)
         self.hetzner_dns_helper.delete_txt_record(
             zone=zone_name,
-            name=record_name
+            name=record_name,
+            value=validation
         )
